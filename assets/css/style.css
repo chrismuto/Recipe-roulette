@@ -52,29 +52,6 @@ p {
     text-align: center;
 }
 
-/*.prev-text {
-    font-weight: bold;
-    border: 3px solid var(--secondary);
-    position: absolute;
-    top: 57%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-    width: 80%;
-    padding: 20px;
-    text-align: center;
-}*/
-
-/*for md screen*/
-/*@media screen and (min-width: 480px) {
-    .bg-text {
-        top: 50%;
-    }
-    .prev-text {
-        top: 60%;
-    }
-}
-/*for lg screen*/
 @media screen and (min-width: 768px) {
     .bg-text {
         top: 45%;

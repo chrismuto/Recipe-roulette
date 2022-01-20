@@ -38,9 +38,10 @@ function displayVideo(data) {
   var video = $("#video");
   var fetchedURL = data.meals[0].strYoutube;
   if (fetchedURL === "") {
-    video.remove();
+    video.hide();
     return;
   }
+  video.show();
   var firstSplit = fetchedURL.split("watch");
   var secondSplit = firstSplit[1].split("=");
   videoURL = firstSplit[0] + "embed/" + secondSplit[1];
@@ -87,18 +88,14 @@ function previousFood(data) {
 
   if (storedArray) {
     foodArray = storedArray;
-    foodList.textContent = "";
+    foodList.text("");
   }
-
-
 
   foodArray.push({
     "foodItem": data.meals[0].strMeal,
     "id": data.meals[0].idMeal
   });
   localStorage.setItem("foodItem", JSON.stringify(foodArray));
-
-
 
   for (i = 0; i < foodArray.length; i++) {
     var newDiv = $("<div>");
@@ -133,17 +130,18 @@ function previousFood(data) {
           showRecipe(data);
           showList(data);
           displayVideo(data);
+          displayCountry(data);
         })
     });
   }
 
   //deletes the foodItem array in local storage
-  function reset() {
-    localStorage.removeItem("foodItem");
-    $("#previousrecipes").remove();
-  }
   $("#reset").on("click", function (event) {
     event.preventDefault();
     reset();
+    function reset() {
+    localStorage.removeItem("foodItem");
+      $("#previousrecipes").remove();
+    }
   })
 }
