@@ -57,6 +57,11 @@ function showRecipe(data) {
   var instructions = data.meals[0].strInstructions;
   recipeName = recipeName.text(name);
   recipeDiv = $("<p>").text(instructions);
+  recipeDiv.addClass(
+    `
+    text-center
+    `
+  );
   $("#recipetext").append(recipeDiv);
 }
 
@@ -88,7 +93,9 @@ function previousFood(data) {
 
   if (storedArray) {
     foodArray = storedArray;
+    var reset = $(`#reset`)
     foodList.text("");
+    // foodList.append(reset)
   }
 
   foodArray.push({
@@ -98,23 +105,21 @@ function previousFood(data) {
   localStorage.setItem("foodItem", JSON.stringify(foodArray));
 
   for (i = 0; i < foodArray.length; i++) {
-    var newDiv = $("<div>");
     var newBtn = $("<button>");
     var id = foodArray[i].id;
     //makes new button have a unique id and value matching meal Id
     newBtn.attr("value", id);
     newBtn.attr("id", "btn-recipe" + id)
     newBtn.text(foodArray[i].foodItem);
-    foodList.append(newDiv);
-    newDiv.append(newBtn);
-    newBtn.css({
-      "border-radius": "5px",
-      "padding": "5px",
-      "margin": "5px",
-      "background-color": "#556B2F",
-      "width": "40%",
-      "color": " #FFFFF0"
-    });
+    foodList.append(newBtn);
+    newBtn.addClass(
+      `rounded-3
+      col-10
+      p-3
+      m-3
+      btn
+      btn-success`
+    );
 
     // when value is clicked, it takes the value from the clicked button id
     $("#btn-recipe" + id).on("click", function (event) {

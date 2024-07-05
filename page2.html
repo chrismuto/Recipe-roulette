@@ -5,39 +5,36 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your new recipe</title>
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="assets/css/style2.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital@1&display=swap" rel="stylesheet">
+    <title>Recipe Roulette</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <style>
+        .strikethrough {
+            text-decoration-line: line-through;
+        }
+    </style>
 </head>
 
-<body>
-    <button type="button" class="btn" id="recipebutton">New Random Recipe!</button>
-    <div id="topcontainer" class="topDiv">
-        <h1 id="recipename">The recipe name</h1>
+<body class="d-flex flex-column align-items-center">
+    <button type="button" class="btn btn-success col-8 col-xl-4 m-4" id="recipebutton">New Random Recipe</button>
+    <div id="topcontainer" class="d-flex flex-column align-items-center col-10 col-xl-6 m-6">
+        <h1 id="recipename" class="ctext-center"></h1>
         <h2 id="country"></h2>
-        <iframe src="" id="video"></iframe>
+        <div  class="my-5 w-100 h-auto ratio ratio-16x9">
+            <iframe src="" id="video"></iframe>
+        </div>
         <h2>Directions: </h2>
         <div id="recipetext"></div>
     </div>
 
-    <hr class="hr1">
-    <div id="bottomcontainer" class="botDiv">
-        <div id="shoppingcontainer" class="shopList">
-            <h2>Shopping List: </h2>
-            <ul id="shoppinglist"></ul>
-        </div>
-        <hr class="hr2">
+    <div id="shoppingcontainer" class="my-2">
+        <h2>Shopping List: </h2>
+        <ul id="shoppinglist"></ul>
+    </div>
 
-        <div id="previouscontainer" class="prevList">
-            <h2>Previous Recipes:</h2>
-            <div id="previousrecipes">
-                <ul id="recipelist">
-                    <button class="clearBtn" id="reset">Clear past recipes</button>
-                </ul>
-            </div>
+    <div id="previouscontainer" class="d-flex flex-column align-items-center w-100">
+        <button type="button" class="btn btn-danger rounded-3 col-6 col-xl-3 py-3 my-3" id="reset">Clear past recipes</button>
+        <h2>Previous Recipes</h2>
+        <div id="previousrecipes" class="d-flex flex-column align-items-center overflow-y-auto col-12 col-xl-6" style="max-height: 400px;">
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.js"
