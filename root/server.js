@@ -2,8 +2,8 @@ import express from "express";
 import login from "./routes/login.js";
 import main from "./routes/main.js";
 import user from "./routes/api/user.js";
-import register from "./routes/register.js"
-import auth from "./routes/auth.js"
+import register from "./routes/register.js";
+import auth from "./routes/auth.js";
 // import recipeRouter from "./routes/recipes.js";
 
 const app = express();
@@ -26,9 +26,14 @@ app.use('/auth', auth);
 app.use('/login', login);
 app.use('/model/users', user);
 
-// app.get('/*', (req, res) => {
-  // res.status(404).sendFile(add 404 page here)
-// })
+app.all('*', (req, res) => {
+  res.status(404)
+  if (req.accepts('html')) {
+    res.sendFile('view/404.html', { root: root })
+  } else if (req.accepts('json')) {
+    res.json({ "error": "404 Not Found" })
+  }
+})
 
 // add errorHandler functions here later if needed with app.use
 

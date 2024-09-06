@@ -1,24 +1,36 @@
 import users from "../model/user.json" assert { type: "json"}
 import fs from "fs"
 
+//Move all functions into data, export for use in jest/calls
+//Once all methods are in data, move to separate file and import to all controllers for cleaner code
+//get rid of all instances of data.users
 const data = {
     users,
     setUsers: function (newData) {
         this.users = newData;
-        fs.writeFileSync("model/user.json", JSON.stringify(newData, null, 2))
-    }
+        fs.writeFileSync("model/user.json", JSON.stringify(newData, null, 2));
+    },
+    getUser: function (reqId) {
+        return this.users.find(user => user.id === parseInt(reqId));
+    },
+    getAllUsers: function () {
+        return this.users;
+    },
+    deleteUser: function (reqId) {
+        return this.users.find(user => user.id === parseInt(reqId));
+    },
+    filterById: function (reqId) {
+        return this.users.filter(targetUser => targetUser.id !== parseInt(reqId));
+    },
 };
 
-
-
 const getAllUsers = (req, res) => {
-    res.json(data.users);
+    res.json(data.getAllUsers());
 }
 
 const createNewUser = (req, res) => {
         const newUser = {
-            //try removing -1 and +1 after getting code working as is
-            id: data.users[data.users.length -1].id + 1 || 1,
+            id: data.getAllUsers()[data.getAllUsers().length -1].id + 1 || 1,
             firstname: req.body.firstname,
             lastname: req.body.lastname
         }
@@ -27,35 +39,35 @@ const createNewUser = (req, res) => {
             return res.status(400).json({ 'message': 'users require a first and last name '});
         }
         
-        data.setUsers([...data.users, newUser]);
-        res.status(201).json(data.users);
+        data.setUsers([...data.getAllUsers(), newUser]);
+        res.status(201).json(data.getAllUsers());
     }
     
     const updateUser = (req, res) => {
-        const user = data.users.find(user => user.id === parseInt(req.body.id));
+        const user = data.getUser(req.body.id);
         if (!user) {
             return res.status(400).json({ "message": `User ID ${req.body.id} not found` });
         }
         if(req.body.firstname) user.firstname = req.body.firstname;
         if(req.body.lastname) user.lastname = req.body.lastname;
-        const filteredArray = data.users.filter(targetUser => targetUser.id !== parseInt(req.body.id));
+        const filteredArray = data.filterById(req.body.id);
         const unsortedArray = [...filteredArray, user];
         data.setUsers(unsortedArray.sort((a, b) => a.id > b.id ? 1 : a.id < b.id ? -1 : 0));
         res.status(201).json(data.users);
     }
     
     const deleteUser = (req, res) => {
-        const user = data.users.find(user => user.id === parseInt(req.body.id));
+        const user = data.deleteUser(req.body.id);
         if (!user) {
             return res.status(400).json({ "message": `User ID ${req.body.id} not found` });
         }
-        const filteredArray = data.users.filter(user => user.id !== parseInt(req.body.id));
+        const filteredArray = data.filterById(req.body.id);
         data.setUsers([...filteredArray]);
         res.status(201).json(users);
     }
     
     const getUser = (req, res) => {
-        const user = users.find(targetUser => targetUser.id === parseInt(req.body.id));
+        const user = data.getUser(req.body.id);
         if (!user) {
             return res.status(400).json({ "message": `User ID ${req.body.id} not found for this id` });
         };

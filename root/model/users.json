@@ -1,5 +1,10 @@
 [
-    {"username":"new user","password":"$2b$10$9Hb8FqS.t4ZuRgesdWxdGeqLUKDxw7JnFVORr0cZG4nKSqpZ/5Y2a"},
-    {"username":"new user1","password":"$2b$10$n/aBmKofbDIDdCeJUTIaz.zOQ7QyqjjumluPjy7q1d8vYR8HWvblC"},
-    {"username":"new user2","password":"$2b$10$iJ/hCngAUeTmi.63LsXY4Ox/YWQqTc.gMvZW2OjQPrB2FuyM/x1Tm"}
+  {
+    "username": "Chris Muto",
+    "password": "$2b$10$H7bb6NifuqE9le4wQsl.LOLMV2rnOlDXbmsEXw8T3zZqHUPW2N7Jm"
+  },
+  {
+    "username": "LeoWong",
+    "password": "$2b$10$iE.m8.P8VkhU4ekqvEAwy.UXsYl.i1PqD3DNSI12zhRkOSOvHwCWi"
+  }
 ]
