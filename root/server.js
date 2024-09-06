@@ -2,6 +2,8 @@ import express from "express";
 import login from "./routes/login.js";
 import main from "./routes/main.js";
 import user from "./routes/api/user.js";
+import register from "./routes/register.js"
+import auth from "./routes/auth.js"
 // import recipeRouter from "./routes/recipes.js";
 
 const app = express();
@@ -19,6 +21,8 @@ app.use(express.json());
 app.use(express.static('view', { root: root }));
 
 app.use('/', main);
+app.use('/register', register);
+app.use('/auth', auth);
 app.use('/login', login);
 app.use('/model/users', user);
 

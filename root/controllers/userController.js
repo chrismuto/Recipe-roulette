@@ -1,8 +1,12 @@
 import users from "../model/user.json" assert { type: "json"}
+import fs from "fs"
 
 const data = {
     users,
-    setUsers: function (newData) { this.users = newData }
+    setUsers: function (newData) {
+        this.users = newData;
+        fs.writeFileSync("model/user.json", JSON.stringify(newData, null, 2))
+    }
 };
 
 
@@ -15,8 +19,8 @@ const createNewUser = (req, res) => {
         const newUser = {
             //try removing -1 and +1 after getting code working as is
             id: data.users[data.users.length -1].id + 1 || 1,
-            "firstname": `${req.body.firstname}`,
-            "lastname": `${req.body.lastname}`
+            firstname: req.body.firstname,
+            lastname: req.body.lastname
         }
         
         if (!newUser.firstname || !newUser.lastname) {
@@ -46,7 +50,7 @@ const createNewUser = (req, res) => {
             return res.status(400).json({ "message": `User ID ${req.body.id} not found` });
         }
         const filteredArray = data.users.filter(user => user.id !== parseInt(req.body.id));
-        data.setUsers = [...filteredArray];
+        data.setUsers([...filteredArray]);
         res.status(201).json(users);
     }
     

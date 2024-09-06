@@ -1,12 +1,17 @@
 [
-    {
+  {
     "id": 1,
-    "firstname": "Chris",
-    "lastname": "Muto"
-    },
-    {
-        "id": 2,
-        "firstname": "David",
-        "lastname": "Luu"
-    }
+    "firstname": "Bill",
+    "lastname": "Gates"
+  },
+  {
+    "id": 2,
+    "firstname": "David",
+    "lastname": "Luu"
+  },
+  {
+    "id": 3,
+    "firstname": "Jeff",
+    "lastname": "Bezos"
+  }
 ]
