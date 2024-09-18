@@ -57,11 +57,7 @@ function showRecipe(data) {
   var instructions = data.meals[0].strInstructions;
   recipeName = recipeName.text(name);
   recipeDiv = $("<p>").text(instructions);
-  recipeDiv.addClass(
-    `
-    text-center
-    `
-  );
+  recipeDiv.addClass(`text-center`);
   $("#recipetext").append(recipeDiv);
 }
 
@@ -112,13 +108,7 @@ function previousFood(data) {
     newBtn.attr("id", "btn-recipe" + id)
     newBtn.text(foodArray[i].foodItem);
     foodList.append(newBtn);
-    newBtn.addClass(
-      `rounded-3
-      col-10
-      p-3
-      m-3
-      btn
-      btn-success`
+    newBtn.addClass(`rounded-3 col-10 p-3 m-3 btn btn-success`
     );
 
     // when value is clicked, it takes the value from the clicked button id

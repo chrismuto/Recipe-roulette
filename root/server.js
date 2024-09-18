@@ -1,9 +1,13 @@
 import express from "express";
-import login from "./routes/login.js";
+// import login from "./routes/login.js";
 import main from "./routes/main.js";
 import user from "./routes/api/user.js";
 import register from "./routes/register.js";
 import auth from "./routes/auth.js";
+import refresh from "./routes/refresh.js";
+import logout from "./routes/logout.js";
+import verifyJWT from "./middleware/verifyJWT.js";
+import cookieParser from "cookie-parser";
 // import recipeRouter from "./routes/recipes.js";
 
 const app = express();
@@ -12,18 +16,25 @@ const root = './';
 
 
 //check https://www.youtube.com/watch?v=f2EqECiTBL8 for usage of middleware, 404 error section and cors options if I add later
-// app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 
 //possibly add cors options here, use separate config file and folder
 
 app.use(express.json());
+
+//middleware for cookies
+app.use(cookieParser())
 
 app.use(express.static('view', { root: root }));
 
 app.use('/', main);
 app.use('/register', register);
 app.use('/auth', auth);
-app.use('/login', login);
+app.use('/refresh', refresh);
+app.use('/logout', logout);
+// app.use('/login', login);
+
+app.use(verifyJWT);
 app.use('/model/users', user);
 
 app.all('*', (req, res) => {
