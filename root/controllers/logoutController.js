@@ -25,7 +25,7 @@ const handleLogout = async (req, res) => {
 //On Client, also delete the access token
 
     const cookies = req.cookies;
-    if (!cookies?.jwt) return res.status(204);
+    if (!cookies?.jwt) return res.sendStatus(204);
     const refreshToken = cookies.jwt
 
     //is refreshToken in DB?
