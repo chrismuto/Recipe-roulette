@@ -41,7 +41,7 @@ const handleLogin = async (req, res) => {
         );
         const refreshToken = jwt.sign(
             { "username": foundUser.username },
-            process.env.REFRESH_TOKEN_SECRET
+            process.env.REFRESH_TOKEN_SECRET 
         );
         //saving refreshToken
         const otherUsers = userDB.getOtherUsers(foundUser.username)

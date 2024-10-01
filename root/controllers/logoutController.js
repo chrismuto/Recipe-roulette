@@ -22,7 +22,7 @@ const userDB = {
 }
 
 const handleLogout = async (req, res) => {
-//On Client, also delete the access token
+   //On Client, also delete the access token
 
     const cookies = req.cookies;
     if (!cookies?.jwt) return res.sendStatus(204);
@@ -36,7 +36,7 @@ const handleLogout = async (req, res) => {
     }
 
     //delete refreshToken in db
-    const otherUsers = userDB.getOtherUsers(foundUser);
+    const otherUsers = userDB.getOtherUsers(foundUser.username);
     const currentUser = { ...foundUser, refreshToken: '' };
     userDB.setUsers([...otherUsers, currentUser])
 

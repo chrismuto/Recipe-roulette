@@ -5,7 +5,7 @@ var recipeList = $("#recipelist");
 var foodArray = [];
 var btn = $("#recipebutton");
 
-fetchMeal();
+// fetchMeal();
 btn.on("click", fetchMeal);
 
 function fetchMeal() {
