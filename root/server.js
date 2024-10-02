@@ -1,3 +1,4 @@
+import env from "dotenv";
 import express from "express";
 // import login from "./routes/login.js";
 import main from "./routes/main.js";
@@ -9,9 +10,16 @@ import logout from "./routes/logout.js";
 import verifyJWT from "./middleware/verifyJWT.js";
 import cookieParser from "cookie-parser";
 // import recipeRouter from "./routes/recipes.js";
+import mongoose from "mongoose";
+import connectDB from "./config/dbConn.js";
+const PORT = process.env.PORT || 3000;
+
+env.config()
+
+//connect to MongoDB
+connectDB();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 const root = './';
 
 
@@ -48,6 +56,7 @@ app.all('*', (req, res) => {
 
 // add errorHandler functions here later if needed with app.use
 
-app.listen(PORT, () => {
-  console.log(`Express server running at http://localhost:${PORT}/`);
+mongoose.connection.once('open', () => {
+  console.log(`connected to MongoDB`);
+  app.listen(PORT, () => console.log(`Express server running at http://localhost:${PORT}/`));
 });

@@ -2,9 +2,6 @@ import users from "../model/users.json" assert { type: "json"}
 import fs from "fs"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
-import env from "dotenv"
-
-const dotenv = env.config();
 
 const userDB = {
     users: users,

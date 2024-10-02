@@ -1,6 +1,5 @@
 import users from "../model/users.json" assert { type: "json"}
 import jwt from "jsonwebtoken"
-// import env from "dotenv"
 
 // const dotenv = env.config();
 
