@@ -1,30 +1,12 @@
-import users from "../model/users.json" assert { type: "json"}
-import fs from "fs"
+import User from "../model/User.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
-
-const userDB = {
-    users: users,
-    setUsers: function (data) { 
-        this.users = data,
-        fs.writeFileSync("model/users.json", JSON.stringify(data))
-     },
-     getUsers: function () {
-        return this.users
-     },
-     getOtherUsers: function (foundUserName) {
-        return this.users.filter(person => person.username !== foundUserName)
-     },
-     findUser: function (user) {
-        return this.users.find(person => person.username === user)
-     }
-}
 
 const handleLogin = async (req, res) => {
     const { user, password } = req.body;
 
     if (!user || !password) return res.status(400).json({"message": "username and password are required"});
-    const foundUser = userDB.findUser(user);
+    const foundUser = await User.findOne( { username: user }).exec();;
     if (!foundUser) return res.status(401).json({ "message": "Incorrect user or password" }); //no user found
 
     //check password
@@ -41,13 +23,10 @@ const handleLogin = async (req, res) => {
             process.env.REFRESH_TOKEN_SECRET 
         );
         //saving refreshToken
-        const otherUsers = userDB.getOtherUsers(foundUser.username)
-        const currentUser = { ...foundUser, refreshToken };
-        userDB.setUsers([...otherUsers, currentUser]);
-        fs.writeFileSync
-        ("model/user.json",
-            JSON.stringify(userDB.users)
-        );
+        foundUser.refreshToken = refreshToken;
+        const result = await foundUser.save();
+        console.log(result);
+
         res.cookie("jwt", refreshToken, { httpOnly: true, maxAge: 30 * 60 * 60 * 1000 }); //add secure: true before production
         res.json({ accessToken });
     } else {

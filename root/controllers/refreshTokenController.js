@@ -1,34 +1,12 @@
-import users from "../model/users.json" assert { type: "json"}
+import User from "../model/User.js";
 import jwt from "jsonwebtoken"
 
-// const dotenv = env.config();
-
-const userDB = {
-    users: users,
-    setUsers: function (data) { 
-        this.users = data,
-        fs.writeFileSync("model/users.json", JSON.stringify(data))
-     },
-     getUsers: function () {
-        return this.users;
-     },
-     getOtherUsers: function (foundUserName) {
-        return this.users.filter(person => person.username !== foundUserName);
-     },
-     findUser: function (user) {
-        return this.users.find(person => person.username === user);
-     },
-     findRefreshToken: function (refreshToken) {
-        return this.users.find(person => person.refreshToken === refreshToken);
-     }
-}
-
-const handleRefreshToken = (req, res) => {
+const handleRefreshToken = async (req, res) => {
     const cookies = req.cookies;
     if (!cookies?.jwt) return res.sendStatus(401);
     const refreshToken = cookies.jwt
 
-    const foundUser = userDB.findRefreshToken(refreshToken);
+    const foundUser = await User.findOne( { refreshToken }).exec();
     if (!foundUser) return res.status(403); //no user found
 
     //check jwt
