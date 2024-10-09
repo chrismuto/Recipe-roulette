@@ -5,7 +5,7 @@ var recipeList = $("#recipelist");
 var foodArray = [];
 var btn = $("#recipebutton");
 
-// fetchMeal();
+fetchMeal();
 btn.on("click", fetchMeal);
 
 function fetchMeal() {
@@ -36,6 +36,7 @@ function displayCountry(data) {
 //embeds youtube videos in the iframe
 function displayVideo(data) {
   var video = $("#video");
+  let videoPlayer = $("#videoPlayer");
   var fetchedURL = data.meals[0].strYoutube;
   if (fetchedURL === "") {
     video.hide();
@@ -45,7 +46,7 @@ function displayVideo(data) {
   var firstSplit = fetchedURL.split("watch");
   var secondSplit = firstSplit[1].split("=");
   videoURL = firstSplit[0] + "embed/" + secondSplit[1];
-  video.attr("src", videoURL);
+  videoPlayer.attr("src", videoURL);
 }
 
 //displays recipe instructions
@@ -89,27 +90,24 @@ function previousFood(data) {
 
   if (storedArray) {
     foodArray = storedArray;
-    var reset = $(`#reset`)
     foodList.text("");
-    // foodList.append(reset)
   }
 
-  foodArray.push({
-    "foodItem": data.meals[0].strMeal,
-    "id": data.meals[0].idMeal
-  });
+  foodArray.push({ "foodItem": data.meals[0].strMeal, "id": data.meals[0].idMeal });
   localStorage.setItem("foodItem", JSON.stringify(foodArray));
 
-  for (i = 0; i < foodArray.length; i++) {
+  let length = Math.min(foodArray.length, 10)
+  for (i = 0; i < length; i++) {
     var newBtn = $("<button>");
-    var id = foodArray[i].id;
+    if (foodArray[i].id) {
+     var id = foodArray[i].id;
+    }
     //makes new button have a unique id and value matching meal Id
     newBtn.attr("value", id);
     newBtn.attr("id", "btn-recipe" + id)
     newBtn.text(foodArray[i].foodItem);
     foodList.append(newBtn);
-    newBtn.addClass(`rounded-3 col-10 p-3 m-3 btn btn-success`
-    );
+    newBtn.addClass(`rounded-3 col-10 p-3 m-3 btn btn-success`);
 
     // when value is clicked, it takes the value from the clicked button id
     $("#btn-recipe" + id).on("click", function (event) {
@@ -135,8 +133,9 @@ function previousFood(data) {
     event.preventDefault();
     reset();
     function reset() {
-    localStorage.removeItem("foodItem");
-      $("#previousrecipes").remove();
+      localStorage.removeItem("foodItem");
+      $("#previousrecipes").empty();
+      foodArray = [];
     }
   })
 }
