@@ -15,20 +15,17 @@
 </head>
 
 <body class="d-flex flex-column justify-content-center align-items-center" style="background-image: url(assets/images/quinoa-salad.jpg); background-size: cover;">
-    <header id="header" class="d-flex flex-row w-100 justify-content-end bg-body-tertiary mb-5" style="--bs-bg-opacity: .8;">
-        <button class="btn btn-success m-3 m-md-6 fs-6 fs-md-3 px-1 px-md-3 py-2">Login</button>
-        <button class="btn btn-danger m-3 m-md-6 fs-6 fs-md-3 px-1 px-md-3 py-2">Logout</button>
-    </header>
     <div class="col-12 h-100 h-md-50 d-flex justify-content-center align-items-center mt-5">
-        <div class="d-flex align-items-center justify-content-center bg-body-tertiary p-4 p-md-8 rounded-3 m-5" style="--bs-bg-opacity: .8;">
-            <form class="d-flex flex-column">
+        <div class="d-flex flex-column align-items-center justify-content-center bg-body-tertiary p-4 p-md-8 rounded-3 m-5" style="--bs-bg-opacity: .8;">
+            <h3>Sign Up</h3>
+            <form action="http://localhost:3000/register" method="POST" class="d-flex flex-column">
                 <label for="username" class="mx-3">Username</label>
-                <input type="text" id="username" name="username" placeholder="username" class="mx-3 mb-3"></input>
+                <input type="text" id="username" name="username" placeholder="username" class="mx-3 mb-3" required>
                 <label for="password" class="mx-3">Password</label>
-                <input type="text" id="password" name="password" placeholder="password" class="mx-3 mb-3"></input>
-                <label for="confirmPassword" class="mx-3">Confirm Password</label>
-                <input type="text" id="confirmPassword" name="confirmPassword" placeholder="password" class="mx-3 mb-3"></input>
-                <button class="btn btn-success m-3 m-md-6 fs-6 fs-md-3 px-1 px-md-3 py-2">Register</button>
+                <input type="password" id="password" name="password" placeholder="password" class="mx-3 mb-3" required>
+                <!-- <label for="confirmPassword" class="mx-3">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="password" required class="mx-3 mb-3"> -->
+                <button type="submit" class="btn btn-success m-3 m-md-6 fs-6 fs-md-3 px-1 px-md-3 py-2">Register</button>
             </form>
         </div>
     </div>

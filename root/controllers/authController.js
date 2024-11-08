@@ -3,10 +3,10 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
 const handleLogin = async (req, res) => {
-    const { user, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!user || !password) return res.status(400).json({"message": "username and password are required"});
-    const foundUser = await User.findOne( { username: user }).exec();;
+    if (!username || !password) return res.status(400).json({"message": "username and password are required"});
+    const foundUser = await User.findOne( { username: username }).exec();;
     if (!foundUser) return res.status(401).json({ "message": "Incorrect user or password" }); //no user found
 
     //check password
@@ -16,7 +16,7 @@ const handleLogin = async (req, res) => {
         const accessToken = jwt.sign(
             { "username": foundUser.username },
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: "30s" }
+            { expiresIn: "5m" }
         );
         const refreshToken = jwt.sign(
             { "username": foundUser.username },
@@ -27,7 +27,7 @@ const handleLogin = async (req, res) => {
         const result = await foundUser.save();
         console.log(result);
 
-        res.cookie("jwt", refreshToken, { httpOnly: true, maxAge: 30 * 60 * 60 * 1000 }); //add secure: true before production
+        res.cookie("jwt", refreshToken, { httpOnly: true, sameSite: "none", secure: true, maxAge: 30 * 60 * 60 * 1000 });
         res.json({ accessToken });
     } else {
         return res.status(401).json({ "message": "Incorrect user or password" }); //incorrect password

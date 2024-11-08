@@ -2,12 +2,12 @@ import bcrypt from "bcrypt";
 import User from "../model/User.js";
 
 const handleNewUser = async (req, res) => {
-    const { user, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!user || !password) return res.status(400).json({ "message": "username and password are required" })
+    if (!username || !password) return res.status(400).json({ "message": "username and password are required" })
         
         //check for duplicate username
-    const duplicate = await User.findOne( { username: user }).exec();
+    const duplicate = await User.findOne( { username: username }).exec();
 
     if (duplicate) return res.status(409).json({ "message": "username is already taken" });
 
@@ -17,13 +17,13 @@ const handleNewUser = async (req, res) => {
 
         //create and store new user
         const result = await User.create({ 
-            "username": user,
+            "username": username,
             "password": hashedPassword
         });
 
         console.log(result);
 
-        res.status(201).json({ "success": `new user ${user} created` });
+        res.status(201).json({ "success": `new user ${username} created` });
     } catch (err) {
         res.status(500).json({ "message": err.message });
     }
