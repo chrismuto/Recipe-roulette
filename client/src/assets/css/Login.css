@@ -21,7 +21,17 @@ html {
   text-align: center;
 }
 
-img {
-    display: grid;
-    place-self: center;
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+input {
+  margin: 10px;
+}
+
+.signup-button {
+  width: 100px;
 }
