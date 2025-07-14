@@ -6,7 +6,7 @@ const asyncHandler = require('express-async-handler');
 // desc Login
 // route POST /auth
 // access public
-const login = asyncHandler(async (req, res) => {
+const handleLogin = asyncHandler(async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
@@ -15,13 +15,11 @@ const login = asyncHandler(async (req, res) => {
 
     const foundUser = await User.findOne({ username }).exec()
 
-    if (!foundUser) {
-        return res.status(401).json({ message: 'Unauthorized' })
-    }
+    if (!foundUser) return res.status(401).json({ message: 'Unauthorized' });
 
-    const match = await bcrypt.compare(password, foundUser.password)
+    const match = await bcrypt.compare(password, foundUser.password);
 
-    if (!match) return res.status(401).json({ message: 'Unauthorized' })
+    if (!match) return res.status(401).json({ message: 'Unauthorized' });
 
     //Make sure to extend token times after testing
     const accessToken = jwt.sign(
@@ -35,7 +33,12 @@ const login = asyncHandler(async (req, res) => {
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: '1d' }
     )
-
+    
+    //saving refreshToken with current user
+    foundUser.refreshToken = refreshToken;
+    const result = await foundUser.save();
+    console.log(result); //remove for production;
+    
     // create secure cookie with refresh token
     res.cookie('jwt', refreshToken, {
         httpOnly: true, //accessible only by web server, not JS
@@ -51,13 +54,17 @@ const login = asyncHandler(async (req, res) => {
 // desc refresh
 // route GET /auth/refresh
 // access public (token has expired)
-const refresh = (req, res) => {
+const handleRefresh = asyncHandler( async (req, res) => {
     const cookies = req.cookies
     
     if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
 
     const refreshToken = cookies.jwt
 
+    const foundUser = await User.findOne({ refreshToken }).exec();
+    if (!foundUser) return res.send(403).json({ message: "forbidden" });
+
+    //evaluate JWT
     jwt.verify(
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
@@ -69,28 +76,43 @@ const refresh = (req, res) => {
             if (!foundUser) return res.status(401).json({ message: 'Unauthorized' })
 
             const accessToken = jwt.sign(
-                { 'username': foundUser.username },
+                { 'username': decoded.username },
                 process.env.ACCESS_TOKEN_SECRET,
                 { expiresIn: '10m' }
             )
 
             res.json({ accessToken })
         })
-    )
-}
+    );
+});
 
 // desc logout
 // route Post /auth/logout
 // access public - just to clear cookie if it exists
-const logout = (req, res) => {
+const handleLogout = asyncHandler( async (req, res) => {
+    // On client, delete accessToken as well
     const cookies = req.cookies
     if (!cookies?.jwt) return res.sendStatus(204) // no content
+    const refreshToken = cookies.jwt;
+
+    //is refreshToken in DB?
+    const foundUser = await User.findOne({ refreshToken }).exec();
+    if (!foundUser) {
+        res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: false }) //change secure to true for deployment
+        res.json({ message: 'Cookie cleared'})
+    }
+
+    //delete refreshToken in DB
+    foundUser.refreshToken = '';
+    const result = await foundUser.save();
+    console.log(result); //delete for production;
+
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: false }) //change secure to true for deployment
     res.json({ message: 'Cookie cleared'})
-}
+});
 
 module.exports = {
-    login,
-    refresh,
-    logout
+    handleLogin,
+    handleRefresh,
+    handleLogout
 };

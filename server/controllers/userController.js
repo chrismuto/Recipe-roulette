@@ -33,7 +33,7 @@ const createNewUser = asyncHandler(async (req, res) => {
     const duplicate = await User.findOne({ username }).lean().exec()
 
     if (duplicate) {
-        return res.status(409).json({ message: 'That user already exists' })
+        return res.status(409).json({ message: 'That username is already in use' })
     }
 
     //hash password
@@ -94,20 +94,20 @@ const deleteUser = asyncHandler(async (req, res) => {
     const { id } = req.body
 
     if (!id) {
-        return res.status(400).json({ message: 'user ID required' })
+        return res.status(400).json({ message: 'user ID required' });
     }
 
-    const user = await User.findById(id).exec()
+    const user = await User.findById(id).exec();
 
     if (!user) {
-        return res.status(400).json({ message: 'user not found' })
+        return res.status(400).json({ message: 'user not found' });
     }
 
-    const result = await User.findByIdAndDelete(id)
+    const result = await User.findByIdAndDelete(id);
 
     const reply = `Username ${result.username} with ID ${result._id} deleted`
 
-    res.json(reply)
+    res.json(reply);
 })
 
 module.exports = {
