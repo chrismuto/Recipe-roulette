@@ -1,0 +1,15 @@
+.header {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  width: 100%;
+}
+
+.logout {
+    background-color: #9c0000;
+    margin: 10px;
+}
+.login, .signup {
+    background-color: #118b11;
+    margin: 10px;
+}

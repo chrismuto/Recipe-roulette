@@ -13,8 +13,8 @@ router.route('/refresh')
 
 router.route('/check-auth')
     .get(verifyJWT, (req, res) => {
-  res.json({ loggedIn: true });
-});
+        res.json({ loggedIn: true });
+    });
 
 router.route('/logout')
     .post(authController.handleLogout)

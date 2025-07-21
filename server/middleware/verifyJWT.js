@@ -2,19 +2,17 @@ const jwt = require('jsonwebtoken');
 
 const verifyJWT = (req, res, next) => {
     //may need req.headers['authorization'] instead of req.headers.authorization
-    const authHeader = req.headers.authorization || req.headers.authorization
+    const token = req.cookies?.accessToken;
 
-    if (!authHeader?.startsWith('Bearer ')) {
-        return res.status(401).json({ loggedIn: false }) //if authorization header does not start with 'Bearer ' return loggedIn variable of false
+    if (!token) {
+        return res.status(401).json({ loggedIn: false, message: 'No token provided' });
     }
-
-    const token = authHeader.split(' ')[1]
 
     jwt.verify(
         token,
         process.env.ACCESS_TOKEN_SECRET,
         (err, decoded) => {
-            if (err) return res.status(403).json({ loggedIn: false }) //if token is not verified, return loggedIn variable of false
+            if (err) return res.status(403).json({ loggedIn: false, message: 'Failed to authenticate token' }) //if token is not verified, return loggedIn variable of false
             req.user = decoded.username
             next()
         }

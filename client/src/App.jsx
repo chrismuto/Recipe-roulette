@@ -4,10 +4,12 @@ import Title from './components/Title';
 import Image from './components/Image';
 import Recipe from './components/Recipe';
 import Ingredients from './components/Ingredients';
+import Header from './components/Header';
 import SavedRecipeContainer from './components/SavedRecipeContainer';
 
 function App() {
 
+  const [loggedIn, setLoggedIn] = useState(false)
   const [recipe, setRecipe] = useState("")
   const [recipes, setRecipes] = useState(() => {
     const storageRecipes = localStorage.getItem("recipes");
@@ -16,8 +18,26 @@ function App() {
   
   useEffect(() => {
     const retrievedRecipes = localStorage.getItem("recipes")
-    console.log(retrievedRecipes)
   }, [recipes])
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  async function checkAuth() {
+    try {
+      const res = await fetch('http://localhost:3500/auth/check-auth', {
+        method: 'GET',
+        credentials: 'include', // <-- sends cookie
+      });
+
+      if (!res.ok) throw new Error('Not authenticated');
+      const data = await res.json();
+      setLoggedIn(data.loggedIn);
+    } catch (err) {
+      setLoggedIn(false);
+    }
+  }
 
   async function fetchRecipe() {
     try {
@@ -56,6 +76,7 @@ function App() {
 
   return (
     <>
+      <Header loggedIn = {loggedIn} />
       <h1>Recipe Roulette</h1>
       <img src="../src/assets/images/empty-bowl-md.png" alt="empty bowl"></img>
       <p>The random recipe generator</p>
@@ -66,7 +87,7 @@ function App() {
       <Image youTubeUrl = {recipe.strYoutube} thumbNail = {recipe.strMealThumb} />
       <Recipe recipe = {recipe.strInstructions} />
       <Ingredients recipe = {recipe} />
-      <SavedRecipeContainer recipe = {recipe} recipes = {recipes} saveRecipe = {saveRecipe} deleteRecipe = {deleteRecipe} setRecipe={setRecipe} setRecipes={setRecipes}/>
+      <SavedRecipeContainer recipe = {recipe} recipes = {recipes} saveRecipe = {saveRecipe} deleteRecipe = {deleteRecipe} setRecipe={setRecipe} setRecipes={setRecipes} />
     </>
   )
 }

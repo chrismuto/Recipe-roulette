@@ -1,6 +1,5 @@
 import './assets/css/Roulette.css'
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import Title from './components/Title';
 import Image from './components/Image';
 import Recipe from './components/Recipe';

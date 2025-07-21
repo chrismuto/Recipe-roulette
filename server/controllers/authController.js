@@ -40,15 +40,22 @@ const handleLogin = asyncHandler(async (req, res) => {
     console.log(result); //remove for production;
     
     // create secure cookie with refresh token
-    res.cookie('jwt', refreshToken, {
+    res.cookie('refreshToken', refreshToken, {
         httpOnly: true, //accessible only by web server, not JS
         secure: false, // uses https, change to true for deployment
-        sameSite: 'None', // cross-site cookie is possible
-        maxAge: 1 * 24 * 60 * 60 * 1000 // cookie expiry, set to match rtoken
+        sameSite: 'Lax', // cross-site cookie is possible
+        maxAge: 7 * 24 * 60 * 60 * 1000 // cookie expiry, set to match rtoken
     })
 
     //send accessToken containing username
-    res.json({ accessToken })
+    res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: false, // use true in production with HTTPS
+        sameSite: 'Lax', // or 'Strict'
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+
+    res.json({ accessToken });
 })
 
 // desc refresh
@@ -62,18 +69,14 @@ const handleRefresh = asyncHandler( async (req, res) => {
     const refreshToken = cookies.jwt
 
     const foundUser = await User.findOne({ refreshToken }).exec();
-    if (!foundUser) return res.send(403).json({ message: "forbidden" });
+    if (!foundUser) return res.status(403).json({ message: "forbidden" });
 
     //evaluate JWT
     jwt.verify(
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
-        asyncHandler(async (err, decoded) => {
-            if (err) return res.status(403).json({ message: 'Forbidden' })
-
-            const foundUser = await User.findOne({ username: decoded.username })
-
-            if (!foundUser) return res.status(401).json({ message: 'Unauthorized' })
+        async (err, decoded) => {
+            if (err || foundUser.username !== decoded.username) return res.status(403).json({ message: 'Forbidden' })
 
             const accessToken = jwt.sign(
                 { 'username': decoded.username },
@@ -82,7 +85,7 @@ const handleRefresh = asyncHandler( async (req, res) => {
             )
 
             res.json({ accessToken })
-        })
+        }
     );
 });
 
@@ -98,7 +101,7 @@ const handleLogout = asyncHandler( async (req, res) => {
     //is refreshToken in DB?
     const foundUser = await User.findOne({ refreshToken }).exec();
     if (!foundUser) {
-        res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: false }) //change secure to true for deployment
+        res.clearCookie('jwt', { httpOnly: true, sameSite: 'Lax', secure: false }) //change secure to true and lax to None for deployment
         res.json({ message: 'Cookie cleared'})
     }
 
@@ -107,7 +110,7 @@ const handleLogout = asyncHandler( async (req, res) => {
     const result = await foundUser.save();
     console.log(result); //delete for production;
 
-    res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: false }) //change secure to true for deployment
+    res.clearCookie('jwt', { httpOnly: true, sameSite: 'Lax', secure: false }) //change secure to true and Lax to None for deployment
     res.json({ message: 'Cookie cleared'})
 });
 

@@ -2,26 +2,30 @@ import '../assets/css/Login.css'
 
 function Signup() {
 
-    const createUser = async (e) => {
+    const login = async (e) => {
+        e.preventDefault(); // prevent form submit reload if any
         try {
-            e.preventDefault()
-            let formUsername = document.getElementById('username').value
-            let formPassword = document.getElementById('password').value
-            
-            await fetch(
-                "http://localhost:3500/users",
-                {
-                    method: 'POST',
-                    body: JSON.stringify({ username: formUsername, password: formPassword}),
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            )
+            const formUsername = document.getElementById('username').value;
+            const formPassword = document.getElementById('password').value;
+
+            const res = await fetch("http://localhost:3500/auth", {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            credentials: 'include',
+            body: JSON.stringify({ username: formUsername, password: formPassword }),
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                console.error("Login failed:", errorData.message);
+            return;
+            }
+
+            // Redirect or update UI here after login
         } catch (err) {
-            console.log(err);
+            console.error("Fetch error:", err);
         }
-    }
+    };
 
     return (
         <>
@@ -34,7 +38,7 @@ function Signup() {
                 <label htmlFor="password">Password</label>
                 <input id="password" name="password" type="password"></input>
 
-                <button onClick={createUser}>Create User</button>
+                <button onClick={login}>Log In</button>
             </form>
         </>
     )
