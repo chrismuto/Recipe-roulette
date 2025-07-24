@@ -9,7 +9,7 @@ import SavedRecipeContainer from './components/SavedRecipeContainer';
 
 function App() {
 
-  const [loggedIn, setLoggedIn] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(null)
   const [recipe, setRecipe] = useState("")
   const [recipes, setRecipes] = useState(() => {
     const storageRecipes = localStorage.getItem("recipes");
@@ -24,18 +24,60 @@ function App() {
     checkAuth();
   }, []);
 
-  async function checkAuth() {
-    try {
-      const res = await fetch('http://localhost:3500/auth/check-auth', {
+async function checkAuth() {
+  try {
+    const res = await fetch('http://localhost:3500/auth/check-auth', {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (res.status === 401 || res.status === 403) {
+      // Access token expired → try to refresh
+      const newAccessToken = await refreshAccessToken();
+
+      if (!newAccessToken) throw new Error('Could not refresh');
+
+      // Retry the original request with new access token if needed (if your backend supports it)
+      const retryRes = await fetch('http://localhost:3500/auth/check-auth', {
         method: 'GET',
-        credentials: 'include', // <-- sends cookie
+        credentials: 'include',
+        headers: {
+          Authorization: `Bearer ${newAccessToken}`,
+        },
       });
 
-      if (!res.ok) throw new Error('Not authenticated');
-      const data = await res.json();
-      setLoggedIn(data.loggedIn);
+      if (!retryRes.ok) throw new Error('Retry failed');
+
+      const retryData = await retryRes.json();
+
+      setLoggedIn(retryData.loggedIn);
+      return;
+    }
+
+    const data = await res.json();
+    setLoggedIn(data.loggedIn);
+  } catch (err) {
+    console.error('Auth check failed', err);
+    setLoggedIn(false);
+  }
+}
+
+  async function refreshAccessToken() {
+    try {
+      const res = await fetch('http://localhost:3500/auth/refresh', {
+        method: 'GET',
+        credentials: 'include', // Important: sends HTTP-only cookie
+      });
+
+      console.log('refresh response', res)
+
+      if (!res.ok) throw new Error('Refresh failed');
+
+      const data = await res.json(); // data.accessToken or similar
+      return data.accessToken;
     } catch (err) {
-      setLoggedIn(false);
+      console.error('Failed to refresh token', err);
+      return null;
     }
   }
 

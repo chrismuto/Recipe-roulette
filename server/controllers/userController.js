@@ -22,7 +22,12 @@ const getUser = asyncHandler(async (req, res) => {
 //POST method
 //access public
 const createNewUser = asyncHandler(async (req, res) => {
-    const { username, password } = req.body
+    const { username, confirmPassword, password } = req.body
+
+    //confirm password
+    if (password !== confirmPassword) {
+        return res.status(400).json({ message: 'password fields must match' })
+    }
 
     //confirm data
     if (!username || !password) {
