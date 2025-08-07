@@ -29,9 +29,12 @@ export default function SavedRecipe(props) {
   }
 
   return (
+    <div className="single-recipe-container">
+      <img src={props.mealImage} className="image-thumbnail" />
       <li className="recipe-list-item">
         <button className="saved-recipe-button" onClick={handleClick}>{props.name}</button>
         <button className="delete-recipe-button" onClick={deleteRecipe}>X</button>
       </li>
+    </div>
   )
 }

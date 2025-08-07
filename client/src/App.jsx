@@ -1,4 +1,4 @@
-import './App.css'
+import './assets/css/App.css'
 import { useState, useEffect } from 'react';
 import Title from './components/Title';
 import Image from './components/Image';
@@ -88,11 +88,11 @@ async function checkAuth() {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
       let json = await response.json();
+      console.log(json.meals[0])
       setRecipe(json.meals[0])
     } catch (e) {
       console.error(e)
     }
-    console.log(recipe)
   }
 
   function checkForDuplicates(recipes, id) {
@@ -100,7 +100,7 @@ async function checkAuth() {
   }
 
   function saveRecipe() {
-    const newRecipe = {"name": recipe.strMeal, "idMeal": recipe.idMeal}
+    const newRecipe = {"name": recipe.strMeal, "idMeal": recipe.idMeal, "image": recipe.strMealThumb}
     const recipeDoesExist = checkForDuplicates(recipes, newRecipe.idMeal)
     if (recipeDoesExist || !newRecipe.idMeal) {
       alert("This recipe is already saved")
@@ -129,7 +129,7 @@ async function checkAuth() {
       <Image youTubeUrl = {recipe.strYoutube} thumbNail = {recipe.strMealThumb} />
       <Recipe recipe = {recipe.strInstructions} />
       <Ingredients recipe = {recipe} />
-      <SavedRecipeContainer recipe = {recipe} recipes = {recipes} saveRecipe = {saveRecipe} deleteRecipe = {deleteRecipe} setRecipe={setRecipe} setRecipes={setRecipes} />
+      <SavedRecipeContainer recipe = {recipe} recipes = {recipes} mealImage = {recipe.strMealThumb} saveRecipe = {saveRecipe} deleteRecipe = {deleteRecipe} setRecipe={setRecipe} setRecipes={setRecipes} />
     </>
   )
 }
